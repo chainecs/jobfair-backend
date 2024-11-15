@@ -23,6 +23,7 @@ const app = express();
 const corsOptions = {
   origin: "*", // This will allow any domain to access your API
   optionsSuccessStatus: 200,
+  credentials: true, // This will enable the credentials for the request
 };
 
 app.use(cors(corsOptions));
