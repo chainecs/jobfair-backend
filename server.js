@@ -29,6 +29,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 
+app.set("trust proxy", 1); // add trust proxy
+
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 mins
   max: 1000,
