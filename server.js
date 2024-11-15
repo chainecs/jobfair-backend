@@ -14,19 +14,13 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+// const nodemailer = require("nodemailer");
 dotenv.config({ path: "./config/config.env" });
 
 connectDB();
 const cors = require("cors");
 const app = express();
-
-const corsOptions = {
-  origin: "*", // This will allow any domain to access your API
-  optionsSuccessStatus: 200,
-  credentials: true, // This will enable the credentials for the request
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(mongoSanitize());
 app.use(helmet());
@@ -35,22 +29,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 
-// เพิ่มการตั้งค่า trust proxy
-app.set("trust proxy", 1);
-
-// แก้ไข limiter เพื่อ handle IP Address จาก proxy
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 นาที
-  max: 1000, // จำกัดจำนวน requests ต่อ IP
-  keyGenerator: (req) => {
-    // ใช้ X-Forwarded-For หากมีค่า
-    const forwarded = req.headers["x-forwarded-for"];
-    const ip = forwarded ? forwarded.split(",")[0] : req.ip;
-    console.log(`Rate Limit IP: ${ip}`); // Log IP เพื่อตรวจสอบ
-    return ip;
-  },
+  windowMs: 10 * 60 * 1000, // 10 mins
+  max: 1000,
 });
-
 app.use(limiter);
 app.use(hpp());
 app.use(cookieParser());
@@ -59,9 +41,7 @@ app.use("/api/v1/auth", auth);
 app.use("/api/v1/bookings", bookings);
 
 const PORT = process.env.PORT || 5001;
-const server = app.listen(PORT, () =>
-  console.log("Server running in", process.env.NODE_ENV, "on http://localhost:" + PORT)
-);
+const server = app.listen(PORT, console.log("Server running in", process.env.NODE_ENV, "on http://localhost:" + PORT));
 
 const swaggerOptions = {
   swaggerDefinition: {
