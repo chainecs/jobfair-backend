@@ -20,7 +20,12 @@ connectDB();
 const cors = require("cors");
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: "*", // This will allow any domain to access your API
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(mongoSanitize());
 app.use(helmet());
