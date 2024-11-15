@@ -31,7 +31,7 @@ app.use(morgan("dev"));
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 mins
-  max: 100000,
+  max: 1000,
 });
 app.use(limiter);
 app.use(hpp());
