@@ -15,10 +15,17 @@ exports.register = async (req, res, next) => {
     });
     sendTokenResponse(user, 200, res);
   } catch (err) {
+    // if error message says "E11000 duplicate key error collection: jobinterview.users index: email_1 dup key: { email: req.body.email }" return 409
+    if (err.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already exists",
+      });
+    }
     res.status(400).json({
       success: false,
     });
-    console.log(err.stack);
+    console.log(err.message);
   }
 };
 
